@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>时钟</title>
+	<style type="text/css">
+		#timer_wrapper {
+
+		}
+	</style>
+</head>
+<body>
+	<canvas id="timer_wrapper" ></canvas>
+
+	<script type="text/javascript">
+		var wra = document.getElementById('timer_wrapper');
+		wra.width = 500;
+		wra.height = 500;
+		var cvs = wra.getContext('2d');
+		//console.log(cvs);
+		//cvs.strokeStyle = '#ccc';
+		//cvs.strokeRect(50,50,400,400);
+
+		var width = 250;
+		var height = 250;
+		var r = 200;
+		var pi = Math.PI;
+
+		function drawLine(lineCount,lineWidth) {
+
+			degree = ( 360 / lineCount ) * ( pi / 180 );
+
+			cvs.beginPath();
+			
+			for( var i = 0; i < lineCount; i++ ) {
+				cvs.moveTo(width,height)
+				cvs.arc(width,height,r,i*degree,(i+1)*degree);
+			}
+			cvs.lineWidth = lineWidth;
+			cvs.strokeStyle = '#000';
+			cvs.stroke();
+			cvs.beginPath();
+		}
+
+		function fill(r,color) {
+			cvs.beginPath();
+			cvs.arc(width,height,r,0,2*pi);
+			cvs.strokeStyle = color;
+			cvs.fillStyle = color;
+			cvs.fill();
+			cvs.beginPath();
+		}
+
+		// 描绘指针的方法
+		function drawPointer(r,strokeStyle,pointerWith,count) {
+			cvs.beginPath();
+			cvs.moveTo(width,height);
+			cvs.arc(width,height,r,count,count);
+			cvs.strokeStyle = strokeStyle;
+			cvs.lineWidth = pointerWith;
+			cvs.stroke();
+			cvs.beginPath();
+		}
+
+		function timer() {
+			fill(r*(28/30));
+
+			// 获取当前时间
+			var date = new Date();
+			var hours = date.getHours();
+			var minutes = date.getMinutes();
+			var seconds = date.getSeconds();
+
+			// 计算时针，分针，秒针的方向
+			var H = (( hours % 12 ) * 30 - 90 + minutes / 2 ) * pi / 180 ;
+			var M = ( minutes * 6 - 90 + seconds / 10 ) * pi / 180;
+			var S = ( seconds * 6 - 90 ) * pi / 180;
+
+			//时针
+			drawPointer(r*2/5,'#000',5,H);
+
+			//分针
+			drawPointer(r*3/5,'#000',3,M);
+
+			//秒针
+			drawPointer(r*4/5,'#f00',1,S);
+		}
+
+
+		drawLine(60,2);
+		drawLine(12,4);
+		fill(r*(27/30),'#fff');
+
+
+		//利用定时器带动时钟
+		setInterval(timer,1000);
+
+
+		
+
+		
+	</script>
+</body>
+</html>
